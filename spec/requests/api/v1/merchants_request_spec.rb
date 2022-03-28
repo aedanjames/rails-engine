@@ -59,4 +59,30 @@ describe "Merchants API" do
 
     expect(merchant).to_not have_key(:items)
   end
+
+  it 'get all items for a specific merchant' do
+    merchant_1 = create(:merchant)
+    merchant_2 = create(:merchant)
+    item_1 = create_list(:item, 4, merchant_id: merchant_1.id)
+    item_2 = create_list(:item, 5, merchant_id: merchant_2.id)
+    get "/api/v1/merchants/#{merchant_1.id}/items"
+    merchant_json = JSON.parse(response.body, symbolize_names: true)
+    expect(merchant_json).to be_an(Hash)
+    expect(merchant_json[:data]).to be_an(Array)
+
+    expect(merchant_json[:data].first).to have_key(:id)
+    expect(merchant_json[:data].first[:id]).to be_an(String)
+
+    expect(merchant_json[:data].first).to have_key(:type)
+    expect(merchant_json[:data].first[:type]).to be_an(String)
+    
+    item = merchant_json[:data].first[:attributes]
+    expect(item).to have_key(:name)
+    expect(item).to have_key(:description)
+    expect(item).to have_key(:unit_price)
+    expect(item).to have_key(:merchant_id)
+    expect(item[:merchant_id]).to eq(merchant_1.id)
+    
+    expect(item[:merchant_id]).to_not eq(merchant_2.id)
+  end
 end
