@@ -129,4 +129,34 @@ describe "Items API" do
     expect(item.name).to eq("So Nice")
   end
 
+  it 'can retrieve the merchant an item belongs to' do
+    merchant_1 = create(:merchant)
+    merchant_2 = create(:merchant)
+    item = create(:item, merchant_id: merchant_1.id)
+
+    get "/api/v1/items/#{item.id}/merchant"
+    
+    merchant = JSON.parse(response.body, symbolize_names: true)
+
+    expect(response).to be_successful
+    expect(merchant).to be_an(Hash)
+    expect(merchant).to have_key(:data)
+    
+    expect(merchant[:data]).to be_an(Hash)
+    data = merchant[:data]
+
+    expect(data).to have_key(:id)
+    expect(data[:id]).to be_an(String)
+
+    expect(data).to have_key(:type)
+    expect(data[:type]).to be_an(String)
+
+    expect(data).to have_key(:attributes)
+
+    attributes = data[:attributes]
+    expect(attributes).to be_an(Hash)
+    expect(attributes).to have_key(:name)
+    expect(attributes[:name]).to be_an(String)
+  end 
+
 end 
