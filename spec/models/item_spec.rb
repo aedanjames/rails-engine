@@ -24,6 +24,7 @@ RSpec.describe Item, type: :model do
         expect(Item.multiple_items("at")).to eq([item_1, item_2])
         expect(Item.multiple_items("At ")).to eq([item_1, item_2])
         expect(Item.multiple_items(" At ")).to eq([item_1, item_2])
+        expect(Item.multiple_items(" At ").include?(item_3)).to eq(false)
       end 
     end 
   end
