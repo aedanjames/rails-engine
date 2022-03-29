@@ -14,6 +14,7 @@ describe "Merchants Search API" do
     expect(response).to be_successful
     expect(response.status).to eq(200)
     expect(response_data).to eq(merchant_2.name)
+    expect(response_data).to_not eq(merchant_1.name)
     expect(response_data).to_not eq(merchant_3.name)
 
     expect(merchant).to be_an(Hash)
