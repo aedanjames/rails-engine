@@ -12,4 +12,15 @@ RSpec.describe Merchant, type: :model do
   describe 'validations' do 
     it { should validate_presence_of :name }
   end 
+
+  describe 'class methods' do 
+    describe '#single_merchant' do 
+      it 'returns one merchant whos name matches an argument, case insensitive' do 
+        merchant_1 = Merchant.create!(name: "The Stranger")
+        merchant_2 = Merchant.create!(name: "The Strangest")
+        expect(Merchant.single_merchant("STranGe ")).to eq(merchant_1)
+        expect(Merchant.single_merchant("STranGe ")).to_not eq(merchant_2)
+      end 
+    end 
+  end 
 end 

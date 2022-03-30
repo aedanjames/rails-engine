@@ -82,7 +82,7 @@ describe "Merchants API" do
     expect(item).to have_key(:unit_price)
     expect(item).to have_key(:merchant_id)
     expect(item[:merchant_id]).to eq(merchant_1.id)
-    
+
     expect(item[:merchant_id]).to_not eq(merchant_2.id)
   end
 end
