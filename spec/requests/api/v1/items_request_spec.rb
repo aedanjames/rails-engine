@@ -147,6 +147,8 @@ describe "Items API" do
 
     expect(data).to have_key(:id)
     expect(data[:id]).to be_an(String)
+    expect(data[:id]).to eq("#{merchant_1.id}")
+    expect(data[:id]).to_not eq("#{merchant_2.id}")
 
     expect(data).to have_key(:type)
     expect(data[:type]).to be_an(String)
