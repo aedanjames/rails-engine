@@ -22,5 +22,15 @@ RSpec.describe Merchant, type: :model do
         expect(Merchant.single_merchant("STranGe ")).to_not eq(merchant_2)
       end 
     end 
+
+    describe '#multiple_merchants' do 
+      it 'returns all merchant whos name matches an argument, case insensitive' do 
+        merchant_1 = Merchant.create!(name: "The Stranger")
+        merchant_2 = Merchant.create!(name: "The Strangest")
+        merchant_3 = Merchant.create!(name: "Fred")
+        expect(Merchant.multiple_merchants("STranGe ")).to eq([merchant_1, merchant_2])
+        expect(Merchant.multiple_merchants("STranGe ")).to_not eq(merchant_3)
+      end 
+    end 
   end 
 end 
