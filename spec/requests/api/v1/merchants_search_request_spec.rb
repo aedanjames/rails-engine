@@ -83,7 +83,7 @@ describe "Merchants Search API" do
     merchant_2 = create(:merchant, name: "The Stranger")
     merchant_3 = create(:merchant, name: "The Strangest")
 
-    get '/api/v1/items/find?name=Veronica'
+    get '/api/v1/merchants/find?name=Veronica'
     expect(response).to be_successful
     
     search = JSON.parse(response.body, symbolize_names: true)
@@ -92,5 +92,32 @@ describe "Merchants Search API" do
 
     expect(search[:data]).to be_an(Hash)
     expect(search[:data][:message]).to be_an(String)
+  end
+
+  it 'returns a hash with a data key empty array value if find search is empty' do 
+    merchant_1 = create(:merchant, name: "The Duke")
+    merchant_2 = create(:merchant, name: "The Stranger")
+    merchant_3 = create(:merchant, name: "The Strangest")
+
+    get '/api/v1/merchants/find?name='
+    expect(response.status).to eq(400)
+  end
+
+  it 'returns status code 400 if no find_all search query is provided' do 
+    merchant_1 = create(:merchant, name: "The Duke")
+    merchant_2 = create(:merchant, name: "The Stranger")
+    merchant_3 = create(:merchant, name: "The Strangest")
+
+    get '/api/v1/merchants/find_all?name='
+    expect(response.status).to eq(400)
+  end
+
+  it 'returns status code 400 if no find search query is provided' do 
+    merchant_1 = create(:merchant, name: "The Duke")
+    merchant_2 = create(:merchant, name: "The Stranger")
+    merchant_3 = create(:merchant, name: "The Strangest")
+
+    get '/api/v1/merchants/find_all?name='
+    expect(response.status).to eq(400)
   end
 end 

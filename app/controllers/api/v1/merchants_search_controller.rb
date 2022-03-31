@@ -17,8 +17,6 @@ class Api::V1::MerchantsSearchController < ApplicationController
       merchants = Merchant.multiple_merchants(params[:name])
       if merchants
         render json: MerchantSerializer.new(merchants)
-      # elsif merchants.nil?
-      #   render json: { data: { message: 'Error: Merchant Not Found' } }
       end 
     elsif params[:name].nil? || params[:name].empty?
       render status: 400
