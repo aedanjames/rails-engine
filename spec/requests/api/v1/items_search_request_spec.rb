@@ -44,4 +44,36 @@ describe 'Items Search API Endpoints' do
     expect(attributes).to have_key(:merchant_id)
     expect(attributes[:merchant_id]).to be_an(Integer)
   end
+
+  it 'can find one item from a partial case-insensitive search' do 
+    hat = create(:item, name: "Hat")
+    jacket = create(:item, name: "Jacket")
+    treat = create(:item, name: "Dog treat")
+
+    get '/api/v1/items/find?name=At'
+
+    expect(response).to be_successful
+
+    at_search = JSON.parse(response.body, symbolize_names: true)
+    expect(at_search).to be_an(Hash)
+    expect(at_search.count).to eq(1)
+    expect(at_search[:data]).to be_an(Hash)
+    
+    expect(at_search[:data][:id]).to be_an(String)
+    expect(at_search[:data][:id]).to eq("#{hat.id}")
+    expect(at_search[:data][:id]).to be_an(String)
+    expect(at_search[:data][:id]).to_not eq("#{jacket.id}")
+    expect(at_search[:data][:id]).to_not eq("#{treat.id}")
+
+    expect(at_search[:data]).to have_key(:type)
+    expect(at_search[:data][:type]).to eq("item")
+
+    expect(at_search[:data][:attributes]).to be_an(Hash)
+
+    attributes = at_search[:data][:attributes]
+    expect(attributes[:name]).to be_an(String)
+    expect(attributes[:description]).to be_an(String)
+    expect(attributes[:unit_price]).to be_an(Float)
+    expect(attributes[:merchant_id]).to be_an(Integer)
+  end 
 end

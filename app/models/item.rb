@@ -11,5 +11,9 @@ class Item < ApplicationRecord
 
   def self.multiple_items(name)
     Item.where("name ilike ?", "%#{name.strip}%")
+  end
+
+  def self.one_item(name)
+    Item.find_by("name ilike ?", "%#{name.strip}%")
   end 
 end 
