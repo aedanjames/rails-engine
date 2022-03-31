@@ -45,7 +45,7 @@ describe 'Items Search API Endpoints' do
     expect(attributes[:merchant_id]).to be_an(Integer)
   end
 
-  it 'returns a hash with a data key and empty array value if search yields no results' do 
+  it 'returns a hash with a data key and empty array value if find_all search yields no results' do 
     hat = create(:item, name: "Hat")
     jacket = create(:item, name: "Jacket")
     treat = create(:item, name: "Dog treat")
@@ -58,6 +58,40 @@ describe 'Items Search API Endpoints' do
     expect(search).to have_key(:data)
     expect(search[:data]).to be_an(Array)
     expect(search[:data].empty?).to eq(true)
+  end
+
+  it 'returns a hash with a data key and error message value if find search yields no results' do 
+    hat = create(:item, name: "Hat")
+    jacket = create(:item, name: "Jacket")
+    treat = create(:item, name: "Dog treat")
+
+    get '/api/v1/items/find?name=ron'
+    expect(response).to be_successful
+    
+    search = JSON.parse(response.body, symbolize_names: true)
+    expect(search).to be_an(Hash)
+    expect(search).to have_key(:data)
+
+    expect(search[:data]).to be_an(Hash)
+    expect(search[:data][:message]).to be_an(String)
+  end
+
+  it 'returns status code 400 if no find_all search query is provided' do 
+    hat = create(:item, name: "Hat")
+    jacket = create(:item, name: "Jacket")
+    treat = create(:item, name: "Dog treat")
+
+    get '/api/v1/items/find_all?name='
+    expect(response.status).to eq(400)
+  end
+
+  it 'returns status code 400 if no find search query is provided' do 
+    hat = create(:item, name: "Hat")
+    jacket = create(:item, name: "Jacket")
+    treat = create(:item, name: "Dog treat")
+
+    get '/api/v1/items/find?name='
+    expect(response.status).to eq(400)
   end
 
   it 'returns status code 400 if no search query is provided' do 
