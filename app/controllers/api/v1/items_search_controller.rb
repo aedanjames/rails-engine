@@ -17,9 +17,6 @@ class Api::V1::ItemsSearchController < ApplicationController
     items = Item.multiple_items(params[:name])
       if items 
         render json: ItemSerializer.new(items)
-      # elsif items.nil?
-      #   binding.pry
-      #   render json: { data: { message: 'Error: Item Not Found' } }
       end 
     elsif params[:name].nil? || params[:name].empty?
       render status: 400
