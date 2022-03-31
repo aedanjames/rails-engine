@@ -129,6 +129,21 @@ describe "Items API" do
     expect(item.name).to eq("So Nice")
   end
 
+  it 'returns status 404 if item cannot be updated' do
+    merchant = create(:merchant)
+    id = create(:item, merchant_id: merchant.id).id
+
+    unedited_name = Item.last.name
+    item_params = { name: '', merchant_id: "#{merchant.id}" }
+    headers = {"CONTENT_TYPE" => "application/json"}
+
+    patch "/api/v1/items/#{id}", headers: headers, params: JSON.generate(item: item_params)
+    item = Item.find_by(id: id)
+    
+    expect(response.status).to eq(404)
+    expect(item.name).to eq(unedited_name)
+  end
+
   it 'can retrieve the merchant an item belongs to' do
     merchant_1 = create(:merchant)
     merchant_2 = create(:merchant)
