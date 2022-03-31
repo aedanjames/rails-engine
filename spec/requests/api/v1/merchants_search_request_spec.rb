@@ -2,9 +2,9 @@ require 'rails_helper'
 
 describe "Merchants Search API" do
   it "can find a merchant from a partial case-insensitive search" do
-    merchant_1 = Merchant.create!(name: "The Duke")
-    merchant_2 = Merchant.create!(name: "The Stranger")
-    merchant_3 = Merchant.create!(name: "The Strangest")
+    merchant_1 = create(:merchant, name: "The Duke")
+    merchant_2 = create(:merchant, name: "The Stranger")
+    merchant_3 = create(:merchant, name: "The Strangest")
   
     get "/api/v1/merchants/find?name=Strange"
   
@@ -30,9 +30,9 @@ describe "Merchants Search API" do
   end 
 
   it "can find all merchants from a partial case-insensitive search" do
-    merchant_1 = Merchant.create!(name: "The Duke")
-    merchant_2 = Merchant.create!(name: "The Stranger")
-    merchant_3 = Merchant.create!(name: "The Strangest")
+    merchant_1 = create(:merchant, name: "The Duke")
+    merchant_2 = create(:merchant, name: "The Stranger")
+    merchant_3 = create(:merchant, name: "The Strangest")
   
     get "/api/v1/merchants/find_all?name=Strange"
     
@@ -60,4 +60,37 @@ describe "Merchants Search API" do
     expect(attributes_2[:name]).to eq("#{merchant_3.name}")
     expect(attributes_1[:name]).to_not eq("#{merchant_1.name}")
   end 
+
+  it 'returns a hash with a data key and empty array value if find_all search yields no results' do
+    merchant_1 = create(:merchant, name: "The Duke")
+    merchant_2 = create(:merchant, name: "The Stranger")
+    merchant_3 = create(:merchant, name: "The Strangest")
+  
+    get "/api/v1/merchants/find_all?name=Veronica"
+    
+    merchants = JSON.parse(response.body, symbolize_names: true)
+    expect(response).to be_successful
+    
+    search = JSON.parse(response.body, symbolize_names: true)
+    expect(search).to be_an(Hash)
+    expect(search).to have_key(:data)
+    expect(search[:data]).to be_an(Array)
+    expect(search[:data].empty?).to eq(true)
+  end 
+
+  it 'returns a hash with a data key and error message value if find search yields no results' do 
+    merchant_1 = create(:merchant, name: "The Duke")
+    merchant_2 = create(:merchant, name: "The Stranger")
+    merchant_3 = create(:merchant, name: "The Strangest")
+
+    get '/api/v1/items/find?name=Veronica'
+    expect(response).to be_successful
+    
+    search = JSON.parse(response.body, symbolize_names: true)
+    expect(search).to be_an(Hash)
+    expect(search).to have_key(:data)
+
+    expect(search[:data]).to be_an(Hash)
+    expect(search[:data][:message]).to be_an(String)
+  end
 end 
