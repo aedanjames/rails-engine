@@ -16,4 +16,12 @@ class Item < ApplicationRecord
   def self.one_item(name)
     Item.find_by("name ilike ?", "%#{name.strip}%")
   end 
+
+  def self.min_price_item(price)
+    Item.find_by("unit_price >= ?", price)
+  end 
+
+  def self.max_price_item(price)
+    Item.find_by("unit_price <= ?", price)
+  end 
 end 

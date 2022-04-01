@@ -52,7 +52,7 @@ describe 'Items Search API Endpoints' do
 
     get '/api/v1/items/find_all?name=ron'
     expect(response).to be_successful
-    
+
     search = JSON.parse(response.body, symbolize_names: true)
     expect(search).to be_an(Hash)
     expect(search).to have_key(:data)
@@ -133,5 +133,45 @@ describe 'Items Search API Endpoints' do
     expect(attributes[:description]).to be_an(String)
     expect(attributes[:unit_price]).to be_an(Float)
     expect(attributes[:merchant_id]).to be_an(Integer)
-  end 
+  end
+  
+  it 'can find one item greater than a minimum given price' do 
+    hat = create(:item, name: "Hat")
+    jacket = create(:item, name: "Jacket", unit_price: 45)
+    treat = create(:item, name: "Dog treat", unit_price: 55)
+
+    get '/api/v1/items/find?min_price=50'
+
+    expect(response).to be_successful
+    min_search = JSON.parse(response.body, symbolize_names: true)
+    expect(min_search).to be_an(Hash)
+    expect(min_search).to have_key(:data)
+    
+    data = min_search[:data]
+    expect(data).to be_an(Hash)
+    expect(data[:id]).to be_an(String)
+    expect(data[:type]).to eq("item")
+    expect(data[:attributes]).to be_an(Hash)
+    expect(data[:attributes][:unit_price]).to be >=(50)
+  end
+
+  it 'can find one item less than a maximum given price' do 
+    hat = create(:item, name: "Hat")
+    jacket = create(:item, name: "Jacket", unit_price: 45)
+    treat = create(:item, name: "Dog treat", unit_price: 55)
+
+    get '/api/v1/items/find?max_price=50'
+
+    expect(response).to be_successful
+    min_search = JSON.parse(response.body, symbolize_names: true)
+    expect(min_search).to be_an(Hash)
+    expect(min_search).to have_key(:data)
+    
+    data = min_search[:data]
+    expect(data).to be_an(Hash)
+    expect(data[:id]).to be_an(String)
+    expect(data[:type]).to eq("item")
+    expect(data[:attributes]).to be_an(Hash)
+    expect(data[:attributes][:unit_price]).to be <=(50)
+  end
 end

@@ -22,7 +22,13 @@ class Api::V1::ItemsController < ApplicationController
 
   def destroy
     item = Item.find(params[:id])
-    if item.destroy
+    invoice_id = item.invoice_items.pluck(:invoice_id)
+    invoices = Invoice.find(invoice_id)
+    if invoices.any? 
+      Invoice.delete_invoices(invoices, item)
+      item.destroy
+      render status: :no_content
+    elsif item.destroy
       render status: :no_content
     end 
   end
