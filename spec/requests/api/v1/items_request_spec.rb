@@ -112,6 +112,23 @@ describe "Items API" do
     expect(Item.count).to eq(0)
   end
 
+  it 'can delete an the invoice as well as item if the only item on invoice is being deleted' do
+    customer = create(:customer)
+    merchant = create(:merchant)
+    item = create(:item, merchant_id: merchant.id)
+    id = item.id
+    invoice = Invoice.create!(customer_id: customer.id, merchant_id: merchant.id, status: "shipped")
+    joins = InvoiceItem.create!(invoice_id: invoice.id, item_id: item.id, quantity: 1, unit_price: 10)
+    expect(Item.count).to eq(1)
+    expect(Invoice.count).to eq(1)
+    delete "/api/v1/items/#{id}"
+
+    expect(response).to be_successful
+    expect(response.status).to eq(204)
+    expect(Item.count).to eq(0)
+    expect(Invoice.count).to eq(0)
+  end
+
   it 'can update an item' do
     merchant = create(:merchant)
     id = create(:item, merchant_id: merchant.id).id

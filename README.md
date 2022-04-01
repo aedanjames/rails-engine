@@ -32,7 +32,7 @@ This app is not on a live server at this time,
 - In your console, type the following commands, one at a time: 
   - `$ git clone git@github.com:aedanjames/rails-engine.git`
   - `$ bundle install`
-  - `$ rake db:{create,migrate}`
+  - `$ rake db:{create,migrate, seed}`
 - Start your server in your console. If on OSX using terminal, you'll enter `$ rails s`
 - Use a tool such as Postman in order to hit the API endpoints. 
 - Api endpoints are as follows: 
