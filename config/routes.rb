@@ -5,6 +5,7 @@ Rails.application.routes.draw do
       get '/merchants/find_all', to: 'merchants_search#find_all'
       get '/items/find_all', to: 'items_search#find_all'
       get '/items/find', to: 'items_search#find'
+      get '/merchants/most_items', to: 'merchants#most_items'
       resources :items, only: [:index, :show, :create, :destroy, :update] 
 
       resources :merchants, only: [:index, :show] do
@@ -14,6 +15,12 @@ Rails.application.routes.draw do
       resources :items do 
         resources :merchant, only: [:index], controller: :item_merchant
       end 
+# activerecord exercise begin
+      namespace :revenue do 
+        resources :merchants, only: [:index, :show]
+        resources :items, only: [:index]
+      end 
+      # namespace :revenue, only: [:index]
     end
   end 
 end

@@ -8,6 +8,8 @@ class Invoice < ApplicationRecord
   has_many :transactions
   has_many :items, through: :invoice_items
 
+  scope :shipped, -> {where(status:"shipped")}
+
   def only_item_on_invoice?(item)
     items.count == 1 && items.first.id == item.id
   end
