@@ -16,4 +16,9 @@ class Api::V1::Revenue::MerchantsController < ApplicationController
     end 
   end 
 
+  def unshipped 
+    invoices = Invoice.not_shipped_potential_revenue
+    render json: UnshippedRevenueSerializer.new(invoices)
+  end 
+
 end 

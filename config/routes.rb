@@ -6,6 +6,8 @@ Rails.application.routes.draw do
       get '/items/find_all', to: 'items_search#find_all'
       get '/items/find', to: 'items_search#find'
       get '/merchants/most_items', to: 'merchants#most_items'
+      get '/revenue/unshipped', to: 'revenue/merchants#unshipped'
+      
       resources :items, only: [:index, :show, :create, :destroy, :update] 
 
       resources :merchants, only: [:index, :show] do

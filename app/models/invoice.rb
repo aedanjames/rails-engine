@@ -21,4 +21,14 @@ class Invoice < ApplicationRecord
       end 
     end 
   end
+
+  def self.not_shipped_potential_revenue
+    Invoice.joins(:invoice_items, :transactions)
+    .select("invoices.id, SUM(invoice_items.quantity * invoice_items.unit_price) AS potential_revenue" )
+    .where(transactions: {result: 'success' })
+    .where.not(invoices: {status: 'shipped' })
+    .group('invoices.id')
+    .order("potential_revenue DESC")
+    # .limit(number)
+  end 
 end 
