@@ -24,4 +24,17 @@ class Item < ApplicationRecord
   def self.max_price_item(price)
     Item.find_by("unit_price <= ?", price)
   end 
+
+  def self.items_with_most_revenue(number)
+    # why doesn't this work?
+    # Item.joins(invoice_items: [:invoices, :transactions])
+    # Item.joins(:invoice_items, :invoices, :transactions)
+    # Item.joins(:invoice_items, invoices: [:transactions])
+    Item.joins(invoices: [:transactions])
+    .select("items.*, SUM(invoice_items.unit_price * invoice_items.quantity) AS revenue")
+    .where(transactions: {result: 'success' }, invoices: {status: 'shipped' })
+    .group("items.id")
+    .order("revenue DESC")
+    .limit(number)
+  end
 end 
